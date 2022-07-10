@@ -25,7 +25,9 @@ rule_file = os.path.abspath(os.path.join(
 def gen_installed_list():
     installed_dev_list = []
     pattern = re.compile(r'ATTRS{serial}=="(\w+)", SYMLINK\+="ttyUSB-com(\d+)", GROUP="dialout"')
-    #pattern = re.compile(r'^.*ATTRS{serial}=="(\w+)".*SYMLINK\+="ttyUSB-com(\d+)".*$')
+    with open(rule_file, 'w+') as f:
+        pass
+
     with open(rule_file, 'r') as f:
         for line in f:
             print(line)
