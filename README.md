@@ -39,6 +39,11 @@ The prefix, this tool creates is ttyUSB-com{num}.
 minicom ttyUSB-com{num}.
 ```
 
+disconnect session
+```bash
+Ctrl + c-x
+```
+
 ### serial config
 If you need to change baurate or other, plz edit minrc file by your self. 
 minrc config file is in ./conf/minirc.tty-USB-com{num}.
@@ -60,7 +65,7 @@ ConsoleGroup='console' &&
 
 sudo apt install -y python3 python3-pip python3-venv minicom task-japanese locales-all
 sudo groupadd $ConsoleGroup &&
-sudo useradd -s /bin/bash -m -g $ConsoleGroup -G ssh $NewUser &&
+sudo useradd -s /bin/bash -m -g $ConsoleGroup dialout plugdev -G ssh $NewUser &&
 echo $NewUser:$NewUserPass | sudo chpasswd &&
 sudo -iu $NewUser mkdir -p /home/$NewUser/.ssh &&
 cat <<EOF | sudo -iu $NewUser tee /home/$NewUser/.ssh/config > /dev/null &&
