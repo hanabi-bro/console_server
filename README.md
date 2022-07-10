@@ -76,8 +76,15 @@ sudo chmod 700 /home/$NewUser/.ssh &&
 sudo chmod 600 /home/$NewUser/.ssh/config &&
 
 cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.bashrc > /dev/null &&
-alias minicom="minicom -C ~/console_server/log/$(date +%y%m%d_%H%M%S).log"
+
+alias minicom="~/.minicom.sh"
 EOF
+
+cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.minicom.sh > /dev/null &&
+#!/bin/bash
+minicom -C ~/console_server/log/$(date +%y%m%d_%H%M%S).log $*
+EOF
+
 
 cat <<EOF | sudo tee /etc/sudoers.d/050_console > /dev/null &&
 %console    ALL=NOPASSWD: /usr/bin/ln, /usr/bin/udevadm control --reload-rules, /usr/bin/udevadm trigger
