@@ -81,7 +81,7 @@ def add_new_rule(serial, num):
         f.write('pu bits             8\n')
         f.write('pu parity           N\n')
         f.write('pu stopbits         1\n')
-
+        f.write('pu sound            No\n')
 
     with open(new_minicomrc_file, 'r') as f:
         new_minicomrc = f.read()
@@ -92,53 +92,54 @@ def add_new_rule(serial, num):
 
     return new_minicomrc_file
 
-# show installed serial
-console.print(f'installed usb serials')
-console.print(f'{gen_installed_list()}')
-console.print(f'++++++++++++++++++++++++')
-console.print(f'Stop Ctrl + C')
-console.print(f'++++++++++++++++++++++++')
+if __name__ == '__main__':
+    # show installed serial
+    console.print(f'installed usb serials')
+    console.print(f'{gen_installed_list()}')
+    console.print(f'++++++++++++++++++++++++')
+    console.print(f'Stop Ctrl + C')
+    console.print(f'++++++++++++++++++++++++')
 
-    
-# monitor usb plugin
-try:
-    context = pyudev.Context()
-    monitor = pyudev.Monitor.from_netlink(context)
-    monitor.filter_by(subsystem='usb')
-    monitor.start()
-    
-    for device in iter(monitor.poll, None):
-        if device.action == 'bind' and device.get('ID_MODEL') == 'FT232R_USB_UART':
-            installed_dev_list = gen_installed_list()
-            new_num = assign_new_num(installed_dev_list)
-            message = f"""
-            =================================================
-            {device.action}
-            BUSNUM: {device.get('BUSNUM')}
-            DEVNUM: {device.get('DEVNUM')}
-            ID_MODEL_ID: {device.get('ID_MODEL_ID')}
-            ID_VENDOR_ID: {device.get('ID_VENDOR_ID')}
-            ID_SERIAL: {device.get('ID_SERIAL')}
-            ID_SERIAL_SHORT: {device.get('ID_SERIAL_SHORT')}
-            =================================================
-            """
-            console.print(textwrap.dedent(message)[1:-1])
-    
-            if check_installed(device.get('ID_SERIAL_SHORT')):
-                pass
-            else:
-                new_minicomrc_file = add_new_rule(device.get('ID_SERIAL_SHORT'), new_num)
-                udev_reload_notice = f"""
-                Plz make minicom simlink then execute udev reload or system reboot.
-                ```bash
-                sudo ln -fs {new_minicomrc_file} /etc/minicom/.
-                sudo udevadm control --reload-rules && sudo udevadm trigger
-                ```
+        
+    # monitor usb plugin
+    try:
+        context = pyudev.Context()
+        monitor = pyudev.Monitor.from_netlink(context)
+        monitor.filter_by(subsystem='usb')
+        monitor.start()
+        
+        for device in iter(monitor.poll, None):
+            if device.action == 'bind' and device.get('ID_MODEL') == 'FT232R_USB_UART':
+                installed_dev_list = gen_installed_list()
+                new_num = assign_new_num(installed_dev_list)
+                message = f"""
+                =================================================
+                {device.action}
+                BUSNUM: {device.get('BUSNUM')}
+                DEVNUM: {device.get('DEVNUM')}
+                ID_MODEL_ID: {device.get('ID_MODEL_ID')}
+                ID_VENDOR_ID: {device.get('ID_VENDOR_ID')}
+                ID_SERIAL: {device.get('ID_SERIAL')}
+                ID_SERIAL_SHORT: {device.get('ID_SERIAL_SHORT')}
+                =================================================
                 """
-                console.print(textwrap.dedent(udev_reload_notice)[1:-1], style='bold white on blue')
-               
-except KeyboardInterrupt:
-    monitor.stop()
+                console.print(textwrap.dedent(message)[1:-1])
+        
+                if check_installed(device.get('ID_SERIAL_SHORT')):
+                    pass
+                else:
+                    new_minicomrc_file = add_new_rule(device.get('ID_SERIAL_SHORT'), new_num)
+                    udev_reload_notice = f"""
+                    Plz make minicom simlink then execute udev reload or system reboot.
+                    ```bash
+                    sudo ln -fs {new_minicomrc_file} /etc/minicom/.
+                    sudo udevadm control --reload-rules && sudo udevadm trigger
+                    ```
+                    """
+                    console.print(textwrap.dedent(udev_reload_notice)[1:-1], style='bold white on blue')
+                
+    except KeyboardInterrupt:
+        monitor.stop()
 
-except Exception as e:
-    console.log(e, log_locals=True)
+    except Exception as e:
+        console.log(e, log_locals=True)
