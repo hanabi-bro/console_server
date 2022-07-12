@@ -61,11 +61,8 @@ pu stopbits         1
 ```bash
 NewUser='console' &&
 NewUserPass='P@ssw0rd' &&
-ConsoleGroup='console' &&
-
-sudo apt install -y python3 python3-pip python3-venv minicom task-japanese locales-all
-sudo groupadd $ConsoleGroup &&
-sudo useradd -s /bin/bash -m -g $ConsoleGroup dialout plugdev -G ssh $NewUser &&
+sudo apt install -y python3 python3-pip python3-venv minicom git &&
+sudo useradd -s /bin/bash -m -G dialout,ssh,plugdev $NewUser &&
 echo $NewUser:$NewUserPass | sudo chpasswd &&
 sudo -iu $NewUser mkdir -p /home/$NewUser/.ssh &&
 cat <<EOF | sudo -iu $NewUser tee /home/$NewUser/.ssh/config > /dev/null &&
@@ -74,26 +71,18 @@ UserKnownHostsFile=/dev/null
 EOF
 sudo chmod 700 /home/$NewUser/.ssh &&
 sudo chmod 600 /home/$NewUser/.ssh/config &&
-
 cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.bashrc > /dev/null &&
-
 source ~/.myrc
 EOF
-
 cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.myrc > /dev/null &&
 function minicom() {
     /usr/bin/minicom -C ~/console_server/log/$1_`date +%y%m%d_%H%M%S`.log $@
 }
-
 EOF
-
-
 cat <<EOF | sudo tee /etc/sudoers.d/050_console > /dev/null &&
 %console    ALL=NOPASSWD: /usr/bin/ln, /usr/bin/udevadm control --reload-rules, /usr/bin/udevadm trigger
 %console    ALL=/usr/sbin/shutdown, /usr/sbin/reboot
 EOF
-
-sudo -iu $NewUser git clone https://github.com/hanabi-bro/console_server.git /home/$NewUser/console_server
+sudo -iu $NewUser git clone https://github.com/hanabi-bro/console_server.git /home/$NewUser/console_server &&
 sudo ln -fs /home/$NewUser/console_server/conf/50-usb-serial.rules /etc/udev/rules.d/.
 ```
-
