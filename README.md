@@ -87,3 +87,48 @@ EOF
 sudo -iu $NewUser git clone https://github.com/hanabi-bro/console_server.git /home/$NewUser/console_server &&
 sudo ln -fs /home/$NewUser/console_server/conf/50-usb-serial.rules /etc/udev/rules.d/.
 ```
+
+
+## 補足 conserver 同居させてみたもののいくつかの理由で使わないことにした
+* ログに1行ごとにタイムスタンプつけられるのは良い。が、セッションごとのファイル作成ができない
+* 新しいUSB追加時に、restartが必要。既存セッションがDropされる
+  - reload試したところ、実行後にconserver-serverにアクセスできなくなる。（バグ？）
+* シリアル接続コマンド`console`で接続対象がtab保管されない。minicomは出来る。
+* conserverとminicomを同居するとminicomが途中で固まったり不安定になる。気がする。
+
+minicomは、1行ごとのタイムスタンプをログに残せないけど、後はだいたい使える気がする、
+
+### conserver Install
+```bash
+sudo apt-get install -y conserver-server conserver-client
+sudo chmod 755 /var/log/conserver
+sudo ln -s /var/log/conserver/ /home/console/console_server/log/.
+sudo ln -fs /home/console/console_server/conf/conserver/conserver.cf /etc/conserver/.
+```
+
+### conserver.cf Sample Default conf
+```cf
+config * {
+}
+default full {
+        rw *;
+}
+default * {
+        logfile /var/log/conserver/&.log;
+        timestamp 1h1lab;
+        include full;
+}
+access * {
+        trusted 127.0.0.1;
+        allowed 127.0.0.1;
+}
+console ttyUSB0 {
+        master localhost;
+        type device;
+        device /dev/ttyUSB0;
+        baud 9600;
+        parity none;
+}
+```
+
+
