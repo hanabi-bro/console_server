@@ -20,7 +20,7 @@ python src/add_usb_serial.py
 ```
 
 ## Howto
-1. Starti this tool
+1. Start this tool
 ```bash
 python /src/usb_serial_install_support.py
 ```
