@@ -77,10 +77,10 @@ sudo chmod 600 /home/$NewUser/.ssh/config &&
 
 cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.bashrc > /dev/null &&
 
-source ~/.consolerc
+source ~/.myrc
 EOF
 
-cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.consolerc > /dev/null &&
+cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.myrc > /dev/null &&
 function minicom() {
     /usr/bin/minicom -C ~/console_server/log/$1_`date +%y%m%d_%H%M%S`.log $@
 }

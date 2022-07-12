@@ -3,6 +3,7 @@
 ### Local Rule
 #
 conf/
+*.tgz
 
 
 ### Django ###
