@@ -101,10 +101,10 @@ sudo gpasswd -a $USER console
 * ログに1行ごとにタイムスタンプつけられるのは良い。が、セッションごとのファイル作成ができない
 * 新しいUSB追加時に、restartが必要。既存セッションがDropされる
   - reload試したところ、実行後にconserver-serverにアクセスできなくなる。（バグ？）
-* シリアル接続コマンド`console`で接続対象がtab保管されない。minicomは出来る。
+* シリアル接続コマンド`console`で接続対象がtab補完されない。minicomは出来る。
 * conserverとminicomを同居するとminicomが途中で固まったり不安定になる。気がする。
 
-minicomは、1行ごとのタイムスタンプをログに残せないけど、後はだいたい使える気がする、
+minicomは、1行ごとのタイムスタンプをログに残せないけど、後はだいたい使える気がするので、minicom使う方向で！
 
 ### conserver Install
 ```bash
