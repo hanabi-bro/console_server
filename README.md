@@ -71,21 +71,29 @@ UserKnownHostsFile=/dev/null
 EOF
 sudo chmod 700 /home/$NewUser/.ssh &&
 sudo chmod 600 /home/$NewUser/.ssh/config &&
-cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.myrc > /dev/null &&
+# cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.myrc > /dev/null &&
+cat <<'EOF' | sudo tee -a /etc/profile.d/myenv.sh > /dev/null &&
+## minicom settings
 export PATH=$PATH:~/.local/bin
 function minicom() {
-    /usr/bin/minicom -C ~/console_server/log/$1_`date +%y%m%d_%H%M%S`.log $@
+    /usr/bin/minicom -C /home/console/console_server/log/$1_`date +%y%m%d_%H%M%S`.log $@
 }
 EOF
-cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.bashrc > /dev/null &&
-source ~/.myrc
-EOF
+# cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.bashrc > /dev/null &&
+# source ~/.myrc
+# EOF
 cat <<EOF | sudo tee /etc/sudoers.d/050_console > /dev/null &&
 %console    ALL=NOPASSWD: /usr/bin/ln, /usr/bin/udevadm control --reload-rules, /usr/bin/udevadm trigger
 %console    ALL=/usr/sbin/shutdown, /usr/sbin/reboot
 EOF
 sudo -iu $NewUser git clone https://github.com/hanabi-bro/console_server.git /home/$NewUser/console_server &&
-sudo ln -fs /home/$NewUser/console_server/conf/50-usb-serial.rules /etc/udev/rules.d/.
+sudo ln -fs /home/$NewUser/console_server/conf/50-usb-serial.rules /etc/udev/rules.d/. &&
+sudo chmod 775 /home/$NewUser/console_server/log
+```
+
+### extra user use console
+```bash
+sudo gpasswd -a $USER console
 ```
 
 
