@@ -71,13 +71,14 @@ UserKnownHostsFile=/dev/null
 EOF
 sudo chmod 700 /home/$NewUser/.ssh &&
 sudo chmod 600 /home/$NewUser/.ssh/config &&
-cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.bashrc > /dev/null &&
-source ~/.myrc
-EOF
 cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.myrc > /dev/null &&
+export PATH=$PATH:~/.local/bin
 function minicom() {
     /usr/bin/minicom -C ~/console_server/log/$1_`date +%y%m%d_%H%M%S`.log $@
 }
+EOF
+cat <<'EOF' | sudo -iu $NewUser tee -a /home/$NewUser/.bashrc > /dev/null &&
+source ~/.myrc
 EOF
 cat <<EOF | sudo tee /etc/sudoers.d/050_console > /dev/null &&
 %console    ALL=NOPASSWD: /usr/bin/ln, /usr/bin/udevadm control --reload-rules, /usr/bin/udevadm trigger
