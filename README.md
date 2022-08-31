@@ -10,7 +10,27 @@ It need to make symlink and reload udev by root privileges with manualy.
   - only FT232R USB UART is available.
 * Use minicom
 
-## Install
+## Use Console Server (minicom)
+Note:
+The tty device prefix, this tool creates is ttyUSB-com{num}.
+
+### Connect serial port
+```bash
+minicom ttyUSB-com{num}.
+```
+
+### Disconnect serial session
+```minicom
+Ctrl + a-x
+```
+
+### View help
+```minicom
+Ctrl + a-z
+```
+
+
+## Install and Setting Console Server
 ```bash
 sudo apt install -y python3 minicom task-japanese locales-all
 git clone https://github.com/hanabi-bro/console_server.git
@@ -19,7 +39,7 @@ sudo python -m pip install -r requirements.txt
 python src/add_usb_serial.py
 ```
 
-## Howto
+### Howto Setyo
 1. Start this tool
 ```bash
 python /src/usb_serial_install_support.py
@@ -30,19 +50,6 @@ python /src/usb_serial_install_support.py
 3. Stop with Ctr + C
 
 4. make symlink and  reload udev to use displayed command
-
-## use minicom
-Note:
-The prefix, this tool creates is ttyUSB-com{num}.
-
-```bash
-minicom ttyUSB-com{num}.
-```
-
-disconnect session
-```bash
-Ctrl + c-x
-```
 
 ### serial config
 If you need to change baurate or other, plz edit minrc file by your self. 
