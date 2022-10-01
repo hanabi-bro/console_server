@@ -24,7 +24,7 @@ rule_file = os.path.abspath(os.path.join(
     '../conf/50-usb-serial.rules'))
 
 # istalled device list
-install_dev_list = []
+installed_dev_list = []
 
 # new_device_info
 new_dev_info = { 'serial': "", 'com': 'num'}
