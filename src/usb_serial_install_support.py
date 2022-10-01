@@ -2,6 +2,8 @@ import os, re, datetime, shutil, textwrap
 import pyudev
 from rich import pretty, print
 from rich.console import Console
+import subprocess, sys
+
 
 console = Console()
 pretty.install()
@@ -21,9 +23,15 @@ rule_file = os.path.abspath(os.path.join(
     os.path.dirname(__file__),
     '../conf/50-usb-serial.rules'))
 
+# istalled device list
+install_dev_list = []
+
+# new_device_info
+new_dev_info = { 'serial': "", 'com': 'num'}
+
+
 # installed device list
 def gen_installed_list():
-    installed_dev_list = []
     pattern = re.compile(r'ATTRS{serial}=="(\w+)", SYMLINK\+="ttyUSB-com(\d+)", GROUP="dialout"')
     with open(rule_file, 'a+') as f:
         pass
@@ -92,6 +100,20 @@ def add_new_rule(serial, num):
 
     return new_minicomrc_file
 
+def persist_usb_dev(new_minicomrc_file):
+    cmds = [
+        ['sudo', 'ln', '-fs', new_minicomrc_file, '/etc/minicom/.'],
+        ['sudo', 'udevadm', 'control', '--reload-rules'], 
+        ['sudo', 'udevadm', 'trigger'],
+    ]
+    
+    for cmd in cmds:
+        let = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+    print(let)
+    print(let.stdout)
+    print(let.stderr)
+
 if __name__ == '__main__':
     # show installed serial
     console.print(f'installed usb serials')
@@ -136,6 +158,7 @@ if __name__ == '__main__':
                     sudo udevadm control --reload-rules && sudo udevadm trigger
                     ```
                     """
+                    persist_usb_dev(new_minicomrc_file)
                     console.print(textwrap.dedent(udev_reload_notice)[1:-1], style='bold white on blue')
                 
     except KeyboardInterrupt:
