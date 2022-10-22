@@ -39,10 +39,10 @@ sudo python -m pip install -r requirements.txt
 python src/add_usb_serial.py
 ```
 
-### Howto Setyo
+### Howto Setup
 1. Start this tool
 ```bash
-python /src/usb_serial_install_support.py
+python ./src/usb_serial_install_support.py
 ```
 
 2. plug in USB serial cable and make symlink and reload udev
