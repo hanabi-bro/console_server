@@ -31,20 +31,17 @@ Ctrl + a-z
 
 
 ## Install and Setting Console Server
+This is summary. See detail for [Server Setup Sample](#Server_Setup_Sample)
 ```bash
 sudo apt install -y python3 minicom task-japanese locales-all
 git clone https://github.com/hanabi-bro/console_server.git
 cd console_server
 sudo python -m pip install -r requirements.txt
-python src/add_usb_serial.py
 ```
-
-### Howto Setup
 1. Start this tool
 ```bash
 python ./src/usb_serial_install_support.py
 ```
-
 2. plug in USB serial cable and make symlink and reload udev
 
 3. Stop with Ctr + C
